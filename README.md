@@ -213,7 +213,7 @@ dispatch('user', 'rename', {name: 'NewName'});
 ```
 
 
-Waiting for an store's item to come and then render
+Waiting for a store's item to come and then render
 
 ```js
 import React from 'react'
@@ -225,6 +225,18 @@ import SomeComponent from './components/SomeComponent'
 </StoreContainer>
 ```
 
+## Creating reducers
+
+```sh
+npm install -g xstore
+xstore create-reducer filename
+```
+or
+```sh
+npm run create-reducer filename
+```
+It will create file filename.js in the process directory if it doesn't exist.
+The file will contain template code of a reducer
 
 ## License
 
