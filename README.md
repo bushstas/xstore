@@ -24,8 +24,8 @@ import ReactDOM from 'react-dom'
 import StoreContainer, {addReducers} from 'xstore'
 import App from './components/App'
 
-import user from './reducers/user'
-import dictionary from './reducers/dictionary'
+import * as user from './reducers/user'
+import * as dictionary from './reducers/dictionary'
 
 addReducers({
   user,
@@ -41,8 +41,8 @@ ReactDOM.render(
 
 Different way to add reducers
 ```js
-import user from './reducers/user'
-import dictionary from './reducers/dictionary'
+import * as user from './reducers/user'
+import * as dictionary from './reducers/dictionary'
 
 const reducers = {
   user,
@@ -59,8 +59,8 @@ ReactDOM.render(
 If you pass "reducers" prop to StoreContainer, then you dont need pass "has" prop
 
 ```js
-import user from './reducers/user'
-import dictionary from './reducers/dictionary'
+import * as user from './reducers/user'
+import * as dictionary from './reducers/dictionary'
 
 const reducers = {
   user,
@@ -78,8 +78,8 @@ This code wont cause any errors.
 The first store will get data when the second store adds the reducers
 
 ```js
-import user from './reducers/user'
-import dictionary from './reducers/dictionary'
+import * as user from './reducers/user'
+import * as dictionary from './reducers/dictionary'
 
 const reducers = {
   user,
@@ -102,8 +102,8 @@ You can pass "has" prop = "\*". Then your component will have all store's data
 
 ```js
 import StoreContainer, {addReducers} from 'xstore'
-import user from './reducers/user'
-import dictionary from './reducers/dictionary'
+import * as user from './reducers/user'
+import * as dictionary from './reducers/dictionary'
 
 const reducers = {
   user,
@@ -124,8 +124,8 @@ You can wrap few components with store, not only one. All of them will be subscr
 
 ```js
 import StoreContainer, {addReducers} from 'xstore'
-import user from './reducers/user'
-import dictionary from './reducers/dictionary'
+import * as user from './reducers/user'
+import * as dictionary from './reducers/dictionary'
 
 const reducers = {
   user,
@@ -146,29 +146,33 @@ ReactDOM.render(
 )
 ```
 
-An example of reducer './reducers/user' 
+An example of reducer './reducers/user'. Action "init" is required to set default state
 
 ```js
-const INITIAL_STATE = {
+import axios from 'axios'
+
+const DEFAULT_STATE = {
   name: 'user',
-  status: 'usual'
+  status: 'alive'
 }
 
-export default (state = INITIAL_STATE, action, payload) => {
-  switch (action) {
-    case 'changeStatus':
-      return {
-        ...state,
-        status: payload.status
-      }
+export const init = () => {
+  return DEFAULT_STATE;
+}
 
-    case 'rename':
-      return {
-        ...state,
-        name: payload.name
-      }
+
+export const load = (state, dispatch, data) => {
+  axios.get('/api/load.php', data)
+    .then(({data}) => {
+      dispatch('user_set', data);
+    });
+}
+
+export const set = (state, dispatch, data) => {
+  return {
+    ...state,
+    ...data
   }
-  return state;
 }
 ```
 
@@ -186,15 +190,15 @@ export default class App extends React.PureComponent {
       Status: {this.props.user.status}
       <div>
         <button onClick={() => {
-          this.props.dispatch('user', 'changeStatus', {status: 'extended'});
+          this.props.dispatch('user_set', {status: 'extended'});
         }}>
-          Kill
+          Extend Status
         </button>
 
         <button onClick={() => {
-          this.props.dispatch('user', 'rename', {name: 'Peter'});
+          this.props.dispatch('user_load', {id: 1});
         }}>
-          Rename
+          Load user
         </button>
       </div>
     </div>
@@ -209,7 +213,7 @@ Dispatching store's action from any place
 ```js
 import {dispatch} from 'xstore'
 
-dispatch('user', 'rename', {name: 'NewName'});
+dispatch('user_set', {name: 'NewName'});
 ```
 
 

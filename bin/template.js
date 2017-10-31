@@ -5,34 +5,21 @@ const DEFAULT_STATE = {
 	status: 'alive'
 }
 
-const load = (dispatch, payload) => {
-	axios.get('/api/load.php', payload)
+export const init = () => {
+	return DEFAULT_STATE;
+}
+
+
+export const load = (state, dispatch, data) => {
+	axios.get('/api/load.php', data)
 		.then(({data}) => {
 			dispatch('user_set', data);
 		});
 }
 
-const reducer = (state = DEFAULT_STATE, action) => {
-	let {type, payload} = action;
-
-	switch (type) {
-		case 'change_status':
-			return {
-				...state,
-				status: payload.status
-			}
-
-		case 'set':
-			return {
-				...state,
-				...payload
-			}
-
+export const set = (state, dispatch, data) => {
+	return {
+		...state,
+		...data
 	}
-	return state;
-}
-
-export default {
-	load,
-	reducer
 }
