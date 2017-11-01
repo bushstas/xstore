@@ -15,85 +15,85 @@ npm install --save xstore
 
 ## Usage
 
-Adding reducers and wrapping App component with StoreContainer.
-Reducers and StoreContainer's "has" props should have the same names
+Adding handlers and wrapping App component with XStoreContainer.
+Reducers and XStoreContainer's "has" props should have the same names
 
 ```js
 import React from 'react'
 import ReactDOM from 'react-dom'
-import StoreContainer, {addReducers} from 'xstore'
+import Store, {XStoreContainer} from 'xstore'
 import App from './components/App'
 
-import * as user from './reducers/user'
-import * as dictionary from './reducers/dictionary'
+import user from './store_handlers/user'
+import dictionary from './store_handlers/dictionary'
 
-addReducers({
+Store.addHandlers({
   user,
   dictionary
 });
 
 ReactDOM.render(
-  <StoreContainer has="user, dictionary">
+  <XStoreContainer has="user, dictionary">
     <App/>
-  </StoreContainer>
+  </XStoreContainer>
 )
 ```
 
-Different way to add reducers
+Different way to add handlers
 ```js
-import * as user from './reducers/user'
-import * as dictionary from './reducers/dictionary'
+import user from './store_handlers/user'
+import dictionary from './store_handlers/dictionary'
 
-const reducers = {
+const handlers = {
   user,
   dictionary
 };
 
 ReactDOM.render(
-  <StoreContainer has="user, dictionary" reducers={reducers}>
+  <XStoreContainer has="user, dictionary" handlers={handlers}>
     <App/>
-  </StoreContainer>
+  </XStoreContainer>
 )
 ```
 
-If you pass "reducers" prop to StoreContainer, then you dont need pass "has" prop
+If you pass "handlers" prop to XStoreContainer, then you dont need pass "has" prop
 
 ```js
-import * as user from './reducers/user'
-import * as dictionary from './reducers/dictionary'
+import user from './store_handlers/user'
+import dictionary from './store_handlers/dictionary'
 
-const reducers = {
+const handlers = {
   user,
   dictionary
 };
 
 ReactDOM.render(
-  <StoreContainer reducers={reducers}>
+  <XStoreContainer handlers={handlers}>
     <App/>
-  </StoreContainer>
+  </XStoreContainer>
 )
 ```
 
 This code wont cause any errors.
-The first store will get data when the second store adds the reducers
+The first store will get data when the second store adds the handlers
 
 ```js
-import * as user from './reducers/user'
-import * as dictionary from './reducers/dictionary'
+import user from './store_handlers/user'
+import dictionary from './store_handlers/dictionary'
 
-const reducers = {
+const handlers = {
   user,
   dictionary
 };
 
 ReactDOM.render(
   <div>
-    <StoreContainer has={['user', 'dictionary']}>
+    <XStoreContainer has={['user', 'dictionary']}>
       <App/>
-    </StoreContainer>
-    <StoreContainer reducers={reducers}>
+    </XStoreContainer>
+    <XStoreContainer handlers={handlers}>
       <App/>
-    </StoreContainer>
+    </XStoreContainer>
   </div>
 )
 ```
@@ -101,21 +101,21 @@ ReactDOM.render(
 You can pass "has" prop = "\*". Then your component will have all store's data
 
 ```js
-import StoreContainer, {addReducers} from 'xstore'
-import * as user from './reducers/user'
-import * as dictionary from './reducers/dictionary'
+import Store, {XStoreContainer} from 'xstore'
+import user from './store_handlers/user'
+import dictionary from './store_handlers/dictionary'
 
-const reducers = {
+const handlers = {
   user,
   dictionary
 };
-addReducers(reducers);
+Store.addHandlers(handlers);
 
 ReactDOM.render(
   <div>
-    <StoreContainer has="*">
+    <XStoreContainer has="*">
       <App/>
-    </StoreContainer>
+    </XStoreContainer>
   </div>
 )
 ``` 
@@ -123,30 +123,30 @@ ReactDOM.render(
 You can wrap few components with store, not only one. All of them will be subscribed to store changes. HTML elements will be ignored, so you can place them 
 
 ```js
-import StoreContainer, {addReducers} from 'xstore'
-import * as user from './reducers/user'
-import * as dictionary from './reducers/dictionary'
+import Store, {XStoreContainer} from 'xstore'
+import user from './store_handlers/user'
+import dictionary from './store_handlers/dictionary'
 
-const reducers = {
+const handlers = {
   user,
   dictionary
 };
-addReducers(reducers);
+Store.addHandlers(handlers);
 
 ReactDOM.render(
   <div>
-    <StoreContainer has="*">
+    <XStoreContainer has="*">
       <SomeComponent1/>
       <div>
         .....
       </div>
       <SomeComponent2>
-    </StoreContainer>
+    </XStoreContainer>
   </div>
 )
 ```
 
-An example of reducer './reducers/user'. Action "init" is required to set default state
+An example of handler './store_handlers/user.js'. Reducer "init" is required to set default state
 
 ```js
 import axios from 'axios'
@@ -156,29 +156,53 @@ const DEFAULT_STATE = {
   status: 'alive'
 }
 
-export const init = () => {
+/**
+ ===============
+ Reducers
+ ===============
+*/
+const init = () => {
   return DEFAULT_STATE;
 }
 
+const set = (state, data) => {
+  return {
+    ...state,
+    ...data
+  }
+}
 
-export const load = (state, dispatch, data) => {
+/**
+ ===============
+ Actions
+ ===============
+*/
+const change = (dispatch, data) => {
+  dispatch('user_set', data);
+}
+
+const load = (dispatch, data) => {
   axios.get('/api/load.php', data)
     .then(({data}) => {
       dispatch('user_set', data);
     });
 }
 
-export const set = (state, dispatch, data) => {
-  return {
-    ...state,
-    ...data
+export default {
+  actions: {
+    load,
+    change
+  },
+  reducers: {
+    init,
+    set
   }
-}
+} 
 ```
 
-Dispatching store's action.
-Component wrapped with StoreContainer has prop "dispatch".
-Props.user and props.dictionary come from store
+This is one way to dispatch xstore's action.
+Component wrapped with "XStoreContainer" has prop "doXStoreAction".
+this.props.user and this.props.dictionary come from store
 
 ```js
 import React from 'react'
@@ -189,31 +213,85 @@ export default class App extends React.PureComponent {
       Name: {this.props.user.name}<br/>
       Status: {this.props.user.status}
       <div>
-        <button onClick={() => {
-          this.props.dispatch('user_set', {status: 'extended'});
-        }}>
+        <button onClick={() => {this.props.doXStoreAction('USER_CHANGE', {status: 'extended'})}}>
           Extend Status
         </button>
 
-        <button onClick={() => {
-          this.props.dispatch('user_load', {id: 1});
-        }}>
+        <button onClick={() => {this.props.doXStoreAction('USER_LOAD', {id: 1})}}>
           Load user
         </button>
       </div>
     </div>
   }
 } 
+```
 
+This is another way to dispatch xstore's action.
+
+```js
+import React from 'react'
+import Store from 'xstore'
+
+export default class App extends React.PureComponent {
+  render() {
+    return <div className="app">
+      Name: {this.props.user.name}<br/>
+      Status: {this.props.user.status}
+      <div>
+        <button onClick={() => {Store.doAction('USER_CHANGE', {status: 'extended'})}}>
+          Extend Status
+        </button>
+
+        <button onClick={() => {Store.doAction('USER_LOAD', {id: 1})}}>
+          Load user
+        </button>
+      </div>
+    </div>
+  }
+} 
+```
+
+A list of xstore's available methods
+
+```js
+
+import Store from 'xstore'
+
+// returns whole cloned state
+let state = Store.getState();
+
+// returns cloned state with name "user"
+let userState = Store.getState('user');
+
+// returns field "name" from state with name "user"
+let userName = Store.getState('user.name');
+
+// returns field with index = 0 from field "items" from state with name "user"
+let someItem = Store.getState('user.items.0');
+
+// call to add handlers
+Store.addHandlers({
+  user: userHandler,
+  dictionary: dictionaryHandler
+})
+
+// call to dispatch action
+// USER_LOAD means that store will dispatch action "load" of handler "user"
+// the first argument can be "User_Load" or "user_load" or even "uSeR_lOaD"
+Store.doAction('USER_LOAD', {id: userId});
+
+// so if you have handler with name "catalog" you have to dispatch actions which look like
+Store.doAction('CATALOG_LOAD');
+Store.doAction('CATALOG_ADD_ITEM', {item});
 ```
 
 
-Dispatching store's action from any place
+Dispatching xstore's action from any place
 
 ```js
-import {dispatch} from 'xstore'
+import Store from 'xstore'
 
-dispatch('user_set', {name: 'NewName'});
+Store.doAction('USER_CHANGE', {name: 'NewName'});
 ```
 
 
@@ -221,26 +299,26 @@ Waiting for a store's item to come and then render
 
 ```js
 import React from 'react'
-import StoreContainer from 'xstore'
+import {XStoreContainer} from 'xstore'
 import SomeComponent from './components/SomeComponent'
 
-<StoreContainer has="user, dictionary" shouldHave="dictionary">
+<XStoreContainer has="user, dictionary" shouldHave="dictionary">
   <SomeComponent/>
-</StoreContainer>
+</XStoreContainer>
 ```
 
-## Creating reducers
+## Creating handlers (initial state, reducers and actions in one file)
 
 ```sh
 npm install -g xstore
-xstore create-reducer filename
+xstore create-handler filename
 ```
 or
 ```sh
-npm run create-reducer filename
+npm run create-handler filename
 ```
 It will create file filename.js in the process directory if it doesn't exist.
-The file will contain template code of a reducer
+The file will contain template code of a handler
 
 ## License
 
