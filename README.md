@@ -15,7 +15,7 @@ npm install --save xstore
 
 ## Usage
 
-Adding handlers and wrapping App component with XStoreContainer.
+Adding handlers and wrapping App component with XStoreContainer.<br />
 Reducers and XStoreContainer's "has" props should have the same names
 
 ```js
@@ -74,7 +74,7 @@ ReactDOM.render(
 )
 ```
 
-This code wont cause any errors.
+This code wont cause any errors.<br />
 The first store will get data when the second store adds the handlers
 
 ```js
@@ -98,7 +98,28 @@ ReactDOM.render(
 )
 ```
 
-You can pass "has" prop = "\*". Then your component will have all store's data
+If you don't need all fields of a store, you can write like this
+
+```js
+
+// if you need just name, age and gender of "user" store
+// and only "userStatuses" field of "dictionary" store
+let has = [
+  'user:name|age|gender',
+  'dictionary:userStatuses'
+]
+
+ReactDOM.render(
+  <div>
+    <XStoreContainer has={has}>
+      <App/>
+    </XStoreContainer>
+  </div>
+)
+```
+
+You can pass "has" prop = "\*".<br />
+Then your component will have all store's data
 
 ```js
 import Store, {XStoreContainer} from 'xstore'
@@ -120,7 +141,9 @@ ReactDOM.render(
 )
 ``` 
 
-You can wrap few components with store, not only one. All of them will be subscribed to store changes. HTML elements will be ignored, so you can place them 
+You can wrap few components with store, not only one.<br />
+All of them will be subscribed to store changes.<br />
+HTML elements will be ignored, so you can place them 
 
 ```js
 import Store, {XStoreContainer} from 'xstore'
@@ -146,7 +169,8 @@ ReactDOM.render(
 )
 ```
 
-An example of handler './store_handlers/user.js'. Reducer "init" is required to set default state
+An example of handler './store_handlers/user.js'.<br />
+Reducer "init" is required to set default state
 
 ```js
 import axios from 'axios'
@@ -200,9 +224,25 @@ export default {
 } 
 ```
 
-This is one way to dispatch xstore's action.
-Component wrapped with "XStoreContainer" has prop "doXStoreAction".
-this.props.user and this.props.dictionary come from store
+This component wrapped with "XStoreContainer" will have props with names which "has" attribute contains
+
+```js
+<XStoreContainer has="user, dictionary, catalog">
+  <SomeComponent/>
+</XStoreContainer>
+
+export default class SomeComponent extends React.PureComponent {
+  render() {
+    let {user, dictionary, catalog} = this.props;
+    return <div className="some-component">
+      ....
+    </div>
+  }
+} 
+```
+
+Component wrapped with "XStoreContainer" will have prop "doXStoreAction".<br />
+This is the first way to dispatch xstore's action
 
 ```js
 import React from 'react'
@@ -254,7 +294,6 @@ export default class App extends React.PureComponent {
 A list of xstore's available methods
 
 ```js
-
 import Store from 'xstore'
 
 // returns whole cloned state
