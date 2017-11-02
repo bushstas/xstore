@@ -5,15 +5,18 @@
     "email": "bushstas@mail.ru"
   },
   "main": "lib/index.js",
-  "version": "1.3.0",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:bushstas/xstore.git"
-  },
+  "version": "1.3.9",
   "bin": {
     "xstore": "bin/exec.js"
   },
+  "bugs": {
+    "url": "https://github.com/bushstas/xstore/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bushstas/xstore.git"
+  },
   "scripts": {
-    "create-reducer": "node ./bin/exec.js"
+    "create-handler": "node ./bin/exec.js"
   }
 }

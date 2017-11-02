@@ -5,21 +5,45 @@ const DEFAULT_STATE = {
 	status: 'alive'
 }
 
-export const init = () => {
+/**
+ ===============
+ Reducers
+ ===============
+*/
+const init = () => {
 	return DEFAULT_STATE;
 }
 
+const set = (state, data) => {
+	return {
+		...state,
+		...data
+	}
+}
 
-export const load = (state, dispatch, data) => {
+/**
+ ===============
+ Actions
+ ===============
+*/
+const change = (dispatch, data) => {
+	dispatch('user_set', data);
+}
+
+const load = (dispatch, data) => {
 	axios.get('/api/load.php', data)
 		.then(({data}) => {
 			dispatch('user_set', data);
 		});
 }
 
-export const set = (state, dispatch, data) => {
-	return {
-		...state,
-		...data
+export default {
+	actions: {
+		load,
+		change
+	},
+	reducers: {
+		init,
+		set
 	}
-}
+} 
