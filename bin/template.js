@@ -14,7 +14,7 @@ const init = () => {
 	return DEFAULT_STATE;
 }
 
-const set = (state, data) => {
+const changed = (state, data) => {
 	return {
 		...state,
 		...data
@@ -26,14 +26,14 @@ const set = (state, data) => {
  Actions
  ===============
 */
-const change = (dispatch, data) => {
-	dispatch('user_set', data);
+const change = ({dispatch}, data) => {
+	dispatch('USER_CHANGED', data);
 }
 
-const load = (dispatch, data) => {
+const load = ({dispatch}, data) => {
 	axios.get('/api/load.php', data)
 		.then(({data}) => {
-			dispatch('user_set', data);
+			dispatch('USER_CHANGED', data);
 		});
 }
 
@@ -44,6 +44,6 @@ export default {
 	},
 	reducers: {
 		init,
-		set
+		changed
 	}
 } 
