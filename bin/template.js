@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 const DEFAULT_STATE = {
-	name: 'user',
-	status: 'alive'
+	param1: 'value1',
+	param2: 'value2'
 }
 
 /**
@@ -27,13 +27,13 @@ const changed = (state, data) => {
  ===============
 */
 const change = ({dispatch}, data) => {
-	dispatch('USER_CHANGED', data);
+	dispatch('{{Name}}_CHANGED', data);
 }
 
 const load = ({dispatch}, data) => {
 	axios.get('/api/load.php', data)
 		.then(({data}) => {
-			dispatch('USER_CHANGED', data);
+			dispatch('{{Name}}_CHANGED', data);
 		});
 }
 
