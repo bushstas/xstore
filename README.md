@@ -208,8 +208,13 @@ Store.dispatch('USER_CHANGED', data);
 npm install -g xstore
 xstore create-handler filename
 ```
-or
+or add to your scripts in package.json this command
 ```sh
+{
+  scripts: {
+    "create-handler": "node node_modules/xstore/bin/exec.js"
+  }
+}
 npm run create-handler filename
 ```
 It will create file filename.js in the process directory if it doesn't exist.

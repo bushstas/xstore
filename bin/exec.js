@@ -4,13 +4,25 @@
 
 var fs = require("fs");
 var path = require("path");
-var argvs = JSON.parse(process.env.npm_config_argv);
-var {remain} = argvs;
-var [command, filename] = remain;
 
+var command, filename;
+if (typeof process.env.npm_config_argv == 'string') {  
+  var argvs = JSON.parse(process.env.npm_config_argv);
+  var {original, remain} = argvs;
+  if (original instanceof Array && original[0] == 'run') {
+    command = original[1];
+    filename = original[2];
+  } else {
+    command = remain[0];
+    filename = remain[1];
+  }
+} else if (process.argv instanceof Array) {
+  command = process.argv[2];
+  filename = process.argv[3];
+}
 
 const commands = {
-  'create-reducer': () => {
+  'create-handler': () => {
       if (typeof filename != 'string') {
         error('Filename argument is not defined');
       }
@@ -18,7 +30,7 @@ const commands = {
       if (fs.existsSync(newFilename)) {
         error('File "' + filename + '.js" already exists');
       } 
-      var content = fs.readFileSync(path.resolve(__dirname, 'template.js'));
+      var content = fs.readFileSync(path.resolve(__dirname, 'template.js'), 'UTF-8');
       content = content.replace(/\{\{Name\}\}/g, filename.toUpperCase());
       fs.writeFileSync(newFilename, content);
   }
