@@ -1,7 +1,6 @@
 # xstore [![npm](https://img.shields.io/npm/v/xstore.svg?style=flat-square)](https://www.npmjs.com/package/xstore)
 
-Xstore is a state container
-
+Xstore is a state container for React
 
 
 ## Installation
@@ -17,7 +16,7 @@ npm install --save xstore
 
 At first you should add so called handlers to store
 
-```js
+```javascript
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Store from 'xstore'
@@ -26,7 +25,7 @@ import App from './components/App'
 import user from './store_handlers/user'
 import dictionary from './store_handlers/dictionary'
 
-// handler name should not containt "_" sign
+// handler name should not contain "_" sign
 Store.addHandlers({
   user,
   dictionary
@@ -41,7 +40,7 @@ ReactDOM.render(
 An example of handler './store_handlers/user.js'.<br />
 Add "init" reducer to set default state
 
-```js
+```javascript
 import axios from 'axios'
 
 const DEFAULT_STATE = {
@@ -54,10 +53,16 @@ const DEFAULT_STATE = {
  Reducers
  ===============
 */
+
+// will be automatically called to initiate state
+// the state will be an empty object if this reducer doesnt exist 
+// dispatch it to reset state
+// dispatch('USER_INIT')
 const init = () => {
   return DEFAULT_STATE;
 }
 
+// dispatch('USER_CHANGED')
 const changed = (state, data) => {
   return {
     ...state,
@@ -70,11 +75,14 @@ const changed = (state, data) => {
  Actions
  ===============
 */
+
+// doAction('USER_CHANGE')
 const change = ({dispatch}, data) => {
   // {dispatch, doAction, getState, state}
   dispatch('USER_CHANGED', data);
 }
 
+// doAction('USER_LOAD')
 const load = ({dispatch}, data) => {
   // {dispatch, doAction, getState, state}
   axios.get('/api/load.php', data)
@@ -97,16 +105,18 @@ export default {
 
 This is example how to connect a component with the store
 
-```js
+```javascript
 import React from 'react'
 import Store from 'xstore'
 
 class ComponentToConnect extends React.Component {
   render() {
     let {user, dictionary} = this.props;
-    return <div className="some-component">
-      ....
-    </div>
+    return (
+      <div className="some-component">
+        ....
+      </div>
+    )
   }
 }
 
@@ -118,7 +128,7 @@ export default Store.connect(ComponentToConnect, params);
 
 Possible connect params
 
-```js
+```javascript
 {
   // store states which will be passed to component as props "user" and "dictionary"
   has: 'user, dictionary',
@@ -155,7 +165,7 @@ Possible connect params
 
 A list of xstore's available methods
 
-```js
+```javascript
 import Store from 'xstore'
 
 // returns whole cloned state
@@ -176,19 +186,26 @@ Store.addHandlers({
   dictionary: dictionaryHandler
 })
 
-// call to dispatch action
-// USER_LOAD means that store will dispatch action "load" of handler "user"
+// call to do store's action
+// USER_LOAD means that store will call action "load" of handler "user"
 // the first argument can be "User_Load" or "user_load" or even "uSeR_lOaD"
 Store.doAction('USER_LOAD', {id: userId});
 
-// so if you have handler with name "catalog" you have to dispatch actions which look like
-Store.doAction('CATALOG_LOAD');
+// call to dispatch store's changes and redraw components
+Store.dispatch('USER_LOADED', data);
+
+// so if you have handler with name "catalog" you have to call actions which look like
+Store.dispatch('CATALOG_FETCH_SUCCESS');
+// so reducer should have name "fetch_success"
+
 Store.doAction('CATALOG_ADD_ITEM', {item});
+// so action should have name "add_item"
+
 ```
 
 Calling store's action from any place
 
-```js
+```javascript
 import Store from 'xstore'
 
 Store.doAction('USER_CHANGE', {name: 'NewName'});
@@ -196,7 +213,7 @@ Store.doAction('USER_CHANGE', {name: 'NewName'});
 
 Dispatching store's changes from any place
 
-```js
+```javascript
 import Store from 'xstore'
 
 Store.dispatch('USER_CHANGED', data);

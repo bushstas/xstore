@@ -11,7 +11,10 @@ const DEFAULT_STATE = {
  ===============
 */
 
-// don't dispatch this
+// will be automatically called to initiate state
+// the state will be an empty object if this reducer doesnt exist 
+// dispatch it to reset state
+// dispatch('USER_INIT')
 const init = () => {
 	return DEFAULT_STATE;
 }
