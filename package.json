@@ -5,7 +5,7 @@
     "email": "bushstas@mail.ru"
   },
   "main": "lib/index.js",
-  "version": "1.7.0",
+  "version": "1.7.2",
   "bin": {
     "xstore": "bin/exec.js"
   },
