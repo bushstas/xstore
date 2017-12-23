@@ -50,6 +50,15 @@ const DEFAULT_STATE = {
 
 /**
  ===============
+ Callback on change state
+ ===============
+*/
+const onStateChange = (state) => {
+  // ...some actions
+}
+
+/**
+ ===============
  Reducers
  ===============
 */
@@ -64,10 +73,9 @@ const init = () => {
 
 // dispatch('USER_CHANGED')
 const changed = (state, data) => {
-  return {
-    ...state,
-    ...data
-  }
+  // you need to return only state params that should be changed
+  // store will automatically create new merged state object
+  return data;
 }
 
 /**
@@ -92,6 +100,7 @@ const load = ({dispatch}, data) => {
 }
 
 export default {
+  onStateChange,
   actions: {
     load,
     change

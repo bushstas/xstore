@@ -7,6 +7,15 @@ const DEFAULT_STATE = {
 
 /**
  ===============
+ Callback on change state
+ ===============
+*/
+const onStateChange = (state) => {
+  // ...some actions
+}
+
+/**
+ ===============
  Reducers
  ===============
 */
@@ -47,6 +56,7 @@ const load = ({dispatch}, data) => {
 }
 
 export default {
+	onStateChange,
 	actions: {
 		load,
 		change
