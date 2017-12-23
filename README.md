@@ -186,9 +186,6 @@ let userState = Store.getState('user');
 // returns field "name" from state with name "user"
 let userName = Store.getState('user.name');
 
-// returns field with index = 0 from field "items" from state with name "user"
-let someItem = Store.getState('user.items.0');
-
 // call to add handlers
 Store.addHandlers({
   user: userHandler,
