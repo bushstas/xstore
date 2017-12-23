@@ -149,6 +149,9 @@ Possible connect params
   // or
   has: ['user:name|status', 'dictionary:userStatuses'],
 
+  // you can also pass "*" that means all it shoul have all stores
+  has: '*',
+
   // component won't be rendered till it doesnt receive these props from the store
   shouldHave: 'user,dictionary',
   // or
