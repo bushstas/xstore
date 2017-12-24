@@ -44,7 +44,8 @@ const changed = (state, data) => {
 
 // doAction('{{Name}}_CHANGE')
 const change = ({dispatch}, data) => {
-	dispatch('{{Name}}_CHANGED', data);
+	// dispatch returns new state
+	let newState = dispatch('{{Name}}_CHANGED', data);
 }
 
 // doAction('{{Name}}_LOAD')

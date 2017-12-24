@@ -87,7 +87,8 @@ const changed = (state, data) => {
 // doAction('USER_CHANGE')
 const change = ({dispatch}, data) => {
   // {dispatch, doAction, getState, state}
-  dispatch('USER_CHANGED', data);
+  // dispatch returns new state
+  let newState = dispatch('USER_CHANGED', data);
 }
 
 // doAction('USER_LOAD')
