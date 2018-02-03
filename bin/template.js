@@ -44,7 +44,7 @@ const changed = (state, data) => {
 
 // doAction('USER_CHANGE')
 const change = ({dispatch, then, doAction, and}, data) => {
-  // {dispatch, doAction, then, and, getState, state}
+  // {dispatch, doAction, then, and, getState, state, reset}
   // dispatch returns new state
   let newState = dispatch('USER_CHANGED', data);
   // or the same but shorter
@@ -55,7 +55,10 @@ const change = ({dispatch, then, doAction, and}, data) => {
   // or the same but shorter
   and('DO_SOME_ON_CHANGE', data);
   // "and" calls doAction with own handler "user"
+
+  // be carefull, "reset" calls Store.reset() which resets all states
 }
+
 
 // doAction('USER_LOAD')
 const load = ({then}, data) => {
