@@ -98,12 +98,12 @@ const change = ({dispatch, then, doAction, and}, data) => {
   // {dispatch, doAction, then, and, getState, state}
   // dispatch returns new state
   let newState = dispatch('USER_CHANGED', data);
-  // or the same by shorter
+  // or the same but shorter
   let newState = then('CHANGED', data);
   // "then" calls dispatch with own handler "user"
 
   doAction('USER_DO_SOME_ON_CHANGE', data);
-  // or the same by shorter
+  // or the same but shorter
   and('DO_SOME_ON_CHANGE', data);
   // "and" calls doAction with own handler "user"
 }
