@@ -232,7 +232,8 @@ Store.doAction('CATALOG_ADD_ITEM', {item});
 // so action should have name "add_item"
 
 Store.reset();
-// calls reset reducer (if such exists) of every single handler to reset all states
+// calls "reset" reducer (if such exists) of every single handler to reset all states
+// if "reset" reducer doesnt exist then "init" reducer is to be called instead
 ```
 
 Calling store's action from any place
