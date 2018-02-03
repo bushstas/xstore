@@ -28,16 +28,6 @@ const init = () => {
 	return DEFAULT_STATE;
 }
 
-// will be automatically executed when Store.reset() called
-// use it when you need some additional functionality to reset state
-// dispatch('USER_RESET')
-const reset = (state) => {
-  delete state.name;
-  delete state.status;
-  return state;
-}
-
-
 // dispatch('{{Name}}_CHANGED')
 const changed = (state, data) => {
 	return {
@@ -52,29 +42,38 @@ const changed = (state, data) => {
  ===============
 */
 
-// doAction('{{Name}}_CHANGE')
-const change = ({dispatch}, data) => {
-	// dispatch returns new state
-	let newState = dispatch('{{Name}}_CHANGED', data);
+// doAction('USER_CHANGE')
+const change = ({dispatch, then, doAction, and}, data) => {
+  // {dispatch, doAction, then, and, getState, state}
+  // dispatch returns new state
+  let newState = dispatch('USER_CHANGED', data);
+  // or the same by shorter
+  let newState = then('CHANGED', data);
+  // "then" calls dispatch with own handler "user"
+
+  doAction('USER_DO_SOME_ON_CHANGE', data);
+  // or the same by shorter
+  and('DO_SOME_ON_CHANGE', data);
+  // "and" calls doAction with own handler "user"
 }
 
-// doAction('{{Name}}_LOAD')
-const load = ({dispatch}, data) => {
-	axios.get('/api/load.php', data)
-		.then(({data}) => {
-			dispatch('{{Name}}_CHANGED', data);
-		});
+// doAction('USER_LOAD')
+const load = ({then}, data) => {
+  // {dispatch, doAction, then, and, getState, state}
+  axios.get('/api/load.php', data)
+    .then(({data}) => {
+      then('CHANGED', data);
+    });
 }
 
 export default {
-	onStateChange,
-	actions: {
-		load,
-		change
-	},
-	reducers: {
-		init,
-		reset,
-		changed
-	}
+  onStateChange,
+  actions: {
+    load,
+    change
+  },
+  reducers: {
+    init,
+    changed
+  }
 } 

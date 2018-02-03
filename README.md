@@ -94,18 +94,26 @@ const changed = (state, data) => {
 */
 
 // doAction('USER_CHANGE')
-const change = ({dispatch}, data) => {
-  // {dispatch, doAction, getState, state}
+const change = ({dispatch, then, doAction, and}, data) => {
+  // {dispatch, doAction, then, and, getState, state}
   // dispatch returns new state
   let newState = dispatch('USER_CHANGED', data);
+  // or the same by shorter
+  let newState = then('CHANGED', data);
+  // "then" calls dispatch with own handler "user"
+
+  doAction('USER_DO_SOME_ON_CHANGE', data);
+  // or the same by shorter
+  and('DO_SOME_ON_CHANGE', data);
+  // "and" calls doAction with own handler "user"
 }
 
 // doAction('USER_LOAD')
-const load = ({dispatch}, data) => {
-  // {dispatch, doAction, getState, state}
+const load = ({then}, data) => {
+  // {dispatch, doAction, then, and, getState, state}
   axios.get('/api/load.php', data)
     .then(({data}) => {
-      dispatch('USER_CHANGED', data);
+      then('CHANGED', data);
     });
 }
 
