@@ -71,6 +71,15 @@ const init = () => {
   return DEFAULT_STATE;
 }
 
+// will be automatically executed when Store.reset() called
+// use it when you need some additional functionality to reset state
+// dispatch('USER_RESET')
+const reset = (state) => {
+  delete state.name;
+  delete state.status;
+  return state;
+}
+
 // dispatch('USER_CHANGED')
 const changed = (state, data) => {
   // you need to return only state params that should be changed
@@ -108,6 +117,7 @@ export default {
   },
   reducers: {
     init,
+    reset,
     changed
   }
 } 
@@ -211,6 +221,8 @@ Store.dispatch('CATALOG_FETCH_SUCCESS');
 Store.doAction('CATALOG_ADD_ITEM', {item});
 // so action should have name "add_item"
 
+Store.reset();
+// calls reset reducer (if such exists) of every single handler to reset all states
 ```
 
 Calling store's action from any place

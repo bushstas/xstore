@@ -28,6 +28,16 @@ const init = () => {
 	return DEFAULT_STATE;
 }
 
+// will be automatically executed when Store.reset() called
+// use it when you need some additional functionality to reset state
+// dispatch('USER_RESET')
+const reset = (state) => {
+  delete state.name;
+  delete state.status;
+  return state;
+}
+
+
 // dispatch('{{Name}}_CHANGED')
 const changed = (state, data) => {
 	return {
@@ -64,6 +74,7 @@ export default {
 	},
 	reducers: {
 		init,
+		reset,
 		changed
 	}
 } 
