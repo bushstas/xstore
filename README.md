@@ -148,6 +148,16 @@ class ComponentToConnect extends React.Component {
       </div>
     )
   }
+
+  // connected component has prop doAction
+  handleSomeAction(value) {
+    this.props.doAction('USER_DO_SOME_ACTION', value);
+  }
+
+  // connected component has prop dispatch
+  handleSomeChanges(data) {
+    this.props.dispatch('USER_SOMETHING_CHANGED', data);
+  }
 }
 
 const params = {
