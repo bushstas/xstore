@@ -71,6 +71,15 @@ const init = () => {
   return DEFAULT_STATE;
 }
 
+// will be automatically executed when Store.reset() called
+// use it when you need some additional functionality to reset state
+// dispatch('USER_RESET')
+const reset = (state) => {
+  delete state.name;
+  delete state.status;
+  return state;
+}
+
 // dispatch('USER_CHANGED')
 const changed = (state, data) => {
   // you need to return only state params that should be changed
@@ -85,18 +94,28 @@ const changed = (state, data) => {
 */
 
 // doAction('USER_CHANGE')
-const change = ({dispatch}, data) => {
-  // {dispatch, doAction, getState, state}
+const change = ({dispatch, then, doAction, and}, data) => {
+  // {dispatch, doAction, then, and, getState, state, reset}
   // dispatch returns new state
   let newState = dispatch('USER_CHANGED', data);
+  // or the same but shorter
+  let newState = then('CHANGED', data);
+  // "then" calls dispatch with own handler "user"
+
+  doAction('USER_DO_SOME_ON_CHANGE', data);
+  // or the same but shorter
+  and('DO_SOME_ON_CHANGE', data);
+  // "and" calls doAction with own handler "user"
+
+  // be carefull, "reset" calls Store.reset() which resets all states
 }
 
 // doAction('USER_LOAD')
-const load = ({dispatch}, data) => {
-  // {dispatch, doAction, getState, state}
+const load = ({then}, data) => {
+  // {dispatch, doAction, then, and, getState, state, reset}
   axios.get('/api/load.php', data)
     .then(({data}) => {
-      dispatch('USER_CHANGED', data);
+      then('CHANGED', data);
     });
 }
 
@@ -108,6 +127,7 @@ export default {
   },
   reducers: {
     init,
+    reset,
     changed
   }
 } 
@@ -211,6 +231,9 @@ Store.dispatch('CATALOG_FETCH_SUCCESS');
 Store.doAction('CATALOG_ADD_ITEM', {item});
 // so action should have name "add_item"
 
+Store.reset();
+// calls "reset" reducer (if such exists) of every single handler to reset all states
+// if "reset" reducer doesnt exist then "init" reducer is to be called instead
 ```
 
 Calling store's action from any place
