@@ -220,7 +220,10 @@ Possible connect params
   handlers: {
     user,
     dictionary
-  }
+  },
+
+  // makes connect component pure
+  pure: true
 }
 ```
 
