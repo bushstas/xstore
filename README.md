@@ -87,6 +87,11 @@ const changed = (state, data) => {
   return data;
 }
 
+// dispatch('USER_FETCHING')
+const fetching = (state) => {
+  return {fetching: true};
+}
+
 /**
  ===============
  Actions
@@ -95,7 +100,7 @@ const changed = (state, data) => {
 
 // doAction('USER_CHANGE')
 const change = ({dispatch, then, doAction, and}, data) => {
-  // {dispatch, doAction, then, and, getState, state, reset}
+  // {dispatch, dispatchAsync, doAction, then, and, getState, state, reset}
   // dispatch returns new state
   let newState = dispatch('USER_CHANGED', data);
   // or the same but shorter
@@ -108,15 +113,27 @@ const change = ({dispatch, then, doAction, and}, data) => {
   // "and" calls doAction with own handler "user"
 
   // be carefull, "reset" calls Store.reset() which resets all states
+  
+  // you can use "return" statemant here
+  return "whatever";
 }
 
 // doAction('USER_LOAD')
-const load = ({then}, data) => {
-  // {dispatch, doAction, then, and, getState, state, reset}
-  axios.get('/api/load.php', data)
+const load = ({then, dispatchAsync}, data) => {
+  // {dispatch, dispatchAsync, doAction, then, and, getState, state, reset}
+  
+  // dispatchAsync is the same dispatch but with tiny timeout
+  // use it if an action is called from "componentDidMount" method
+  // so parental connect component still not mounted and cant update your component
+  // this won't return new state
+  dispatchAsync('USER_FETCHING');  
+
+  const promise = axios.get('/api/load.php', data)
     .then(({data}) => {
       then('CHANGED', data);
     });
+
+  return promise;
 }
 
 export default {
@@ -128,7 +145,8 @@ export default {
   reducers: {
     init,
     reset,
-    changed
+    changed,
+    fetching
   }
 } 
 ```
