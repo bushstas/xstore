@@ -100,7 +100,7 @@ const fetching = (state) => {
 
 // doAction('USER_CHANGE')
 const change = ({dispatch, then, doAction, and}, data) => {
-  // {dispatch, dispatchAsync, doAction, then, and, getState, state, reset}
+  // {setState, dispatch, dispatchAsync, doAction, then, and, getState, state, reset}
   // dispatch returns new state
   let newState = dispatch('USER_CHANGED', data);
   // or the same but shorter
@@ -119,8 +119,8 @@ const change = ({dispatch, then, doAction, and}, data) => {
 }
 
 // doAction('USER_LOAD')
-const load = ({then, dispatchAsync}, data) => {
-  // {dispatch, dispatchAsync, doAction, then, and, getState, state, reset}
+const load = ({setState, then, dispatchAsync}, data) => {
+  // {setState, dispatch, dispatchAsync, doAction, then, and, getState, state, reset}
   
   // dispatchAsync is the same dispatch but with tiny timeout
   // use it if an action is called from "componentDidMount" method
@@ -131,7 +131,12 @@ const load = ({then, dispatchAsync}, data) => {
   const promise = axios.get('/api/load.php', data)
     .then(({data}) => {
       then('CHANGED', data);
+      // or you can use setState
+      setState(data);
     });
+
+    // or shorter way
+    const promise = axios.get('/api/load.php', data).then(setState);
 
   return promise;
 }
