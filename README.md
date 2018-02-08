@@ -144,7 +144,7 @@ const load = ({setState, then, dispatchAsync}, data) => {
 export default {
   // saving state in the local storage, so it will be restored after page reloaded
   localStore: {
-    // unique key
+    // unique key (the only required field)
     key: 'user_state',
     // list of state fields that need to save
     // they will be merged with initial state
