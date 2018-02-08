@@ -142,6 +142,23 @@ const load = ({setState, then, dispatchAsync}, data) => {
 }
 
 export default {
+  // saving state in the local storage, so it will be restored after page reloaded
+  localStore: {
+    // unique key
+    key: 'user_state',
+    // list of state fields that need to save
+    // they will be merged with initial state
+    // whole state will be saved if names not defined
+    names: [
+      'currentStatus',
+      'currentPage',
+      'someParam'
+    ],
+    // if state is changing too frequently use timeout
+    timeout: 100,
+    // lifetime of stored data
+    lifetime: '2hour'
+  },
   onStateChange,
   actions: {
     load,
