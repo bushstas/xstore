@@ -157,6 +157,7 @@ export default {
     // if state is changing too frequently use timeout
     timeout: 100,
     // lifetime of stored data
+    // Nmin, Nhour, Nday, Nmonth
     lifetime: '2hour'
   },
   onStateChange,
