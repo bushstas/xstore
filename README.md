@@ -73,8 +73,12 @@ const init = () => {
 
 // will be automatically executed when Store.reset() called
 // use it when you need some additional functionality to reset state
+// second argument is state that saved in the local storage
 // dispatch('USER_RESET')
-const reset = (state) => {
+const reset = (state, savedInLocalStorage) => {
+  if (savedInLocalStorage) {
+    return savedInLocalStorage;
+  }
   delete state.name;
   delete state.status;
   return state;
@@ -100,7 +104,7 @@ const fetching = (state) => {
 
 // doAction('USER_CHANGE')
 const change = ({dispatch, then, doAction, and}, data) => {
-  // {setState, dispatch, dispatchAsync, doAction, then, and, getState, state, reset}
+  // {setState, dispatch, dispatchAsync, doAction, then, and, getState, state, reset, getSavedState}
   // dispatch returns new state
   let newState = dispatch('USER_CHANGED', data);
   // or the same but shorter
@@ -120,7 +124,7 @@ const change = ({dispatch, then, doAction, and}, data) => {
 
 // doAction('USER_LOAD')
 const load = ({setState, then, dispatchAsync}, data) => {
-  // {setState, dispatch, dispatchAsync, doAction, then, and, getState, state, reset}
+  // {setState, dispatch, dispatchAsync, doAction, then, and, getState, state, reset, getSavedState}
   
   // dispatchAsync is the same dispatch but with tiny timeout
   // use it if an action is called from "componentDidMount" method
@@ -141,9 +145,18 @@ const load = ({setState, then, dispatchAsync}, data) => {
   return promise;
 }
 
-export default {
-  // saving state in the local storage, so it will be restored after page reloaded
-  localStore: {
+// doAction('USER_SOME_ACTION')
+const some_action = ({getSavedState}, data) => {
+  // {setState, dispatch, dispatchAsync, doAction, then, and, getState, state, reset, getSavedState}
+  const savedState = getSavedState('user');
+
+  if (savedState) {
+    return 'state is saved in the local storage';
+  }
+}
+
+ // saving state in the local storage, so it will be restored after page reloaded
+ const localStore = {
     // unique key (the only required field)
     key: 'user_state',
     // list of state fields that need to save
@@ -168,12 +181,27 @@ export default {
         ...stateFromLocalStorage
       };
     },
+    // return false if you dont want to get state from local storage
+    shouldLoad: () => {
+      return true;
+    },
+    // return false if state should not be saved
+    shouldSave: (state) => {
+      return state.someValue === true;
+    },
+    // return true if state should removed from the local storage
+    shouldRemove: (state) => {
+      return !state.someItem;
+    },
     // if state is changing too frequently use timeout
     timeout: 100,
     // lifetime of stored data
     // Nmin, Nhour, Nday, Nmonth
     lifetime: '2hour'
   },
+
+export default {
+  localStore,
   onStateChange,
   actions: {
     load,
