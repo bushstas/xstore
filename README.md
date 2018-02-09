@@ -205,7 +205,8 @@ export default {
   onStateChange,
   actions: {
     load,
-    change
+    change,
+    some_action
   },
   reducers: {
     init,
