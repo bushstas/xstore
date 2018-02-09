@@ -189,7 +189,7 @@ const some_action = ({getSavedState}, data) => {
     shouldSave: (state) => {
       return state.someValue === true;
     },
-    // return true if state should removed from the local storage
+    // return true if state should be removed from the local storage
     shouldRemove: (state) => {
       return !state.someItem;
     },
