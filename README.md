@@ -154,6 +154,13 @@ export default {
       'currentPage',
       'someParam'
     ],
+    // or use function to define state that shoul be saved
+    // "names" have bigger priority than "getData"
+    getData: (state) => {
+      delete state.some;
+      state.any = true;
+      return state;
+    },
     // if state is changing too frequently use timeout
     timeout: 100,
     // lifetime of stored data
