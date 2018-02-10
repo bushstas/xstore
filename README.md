@@ -25,6 +25,13 @@ import App from './components/App'
 import user from './store_handlers/user'
 import dictionary from './store_handlers/dictionary'
 
+// you can set default params here
+// "flat" and "withPrefix" are only available options
+Store.setDefaultParams({
+  flat: true,
+  withPrefix: true
+});
+
 // handler name should not contain "_" sign
 Store.addHandlers({
   user,
@@ -248,6 +255,8 @@ const params = {
   has: 'user, dictionary'
 }
 export default Store.connect(ComponentToConnect, params);
+// or shorter way
+export default Store.connect(ComponentToConnect, 'user, dictionary');
 ```
 
 Possible connect params
@@ -288,8 +297,9 @@ Possible connect params
     dictionary
   },
 
-  // makes connect component pure
-  pure: true
+  // makes connect component not pure
+  // by default connect components are all pure
+  pure: false
 }
 ```
 
@@ -306,6 +316,12 @@ let userState = Store.getState('user');
 
 // returns field "name" from state with name "user"
 let userName = Store.getState('user.name');
+
+// set params by default
+Store.setDefaultParams({
+  flat: true,
+  withPrefix: true
+});
 
 // call to add handlers
 Store.addHandlers({
